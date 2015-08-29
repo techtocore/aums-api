@@ -1,6 +1,6 @@
 {
     "name": "niranjan94/aums-api",
-    "description": "An OAuth 2.0 API for Amrita University Management System",
+    "description": "An API for Amrita University Management System",
     "require": {
         "slim/slim": "^2.6",
         "league/oauth2-server": "^4.1",
@@ -12,5 +12,10 @@
             "name": "Niranjan Rajendran",
             "email": "niranjan94@yahoo.com"
         }
-    ]
+    ],
+    "autoload": {
+      "psr-0" : {
+        "Aums" : "app"
+      }
+    }
 }

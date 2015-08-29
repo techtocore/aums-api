@@ -8,17 +8,17 @@ This library uses [Composer](https://getcomposer.org/) for dependency management
 
 Include this in your ```composer.json``` file
 
-
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/niranjan94/aums-api"
-        }
-    ],
-    "require": {
-        "niranjan94/aums-api": "dev-master"
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/niranjan94/aums-api"
     }
-
+],
+"require": {
+    "niranjan94/aums-api": "dev-master"
+}
+```
 
 Run ```composer update``` and you're good to go.
 
@@ -26,32 +26,37 @@ Run ```composer update``` and you're good to go.
 
 Initialize the ```\Aums\API``` class.
 
-    $api = new \Aums\API("full_roll_number", "password");
-    
+```php
+$api = new \Aums\API("full_roll_number", "password");
+```
+
 Call the ```login``` method
 
-    /**
-     * Start the login flow
-     * @throws AumsOfflineException
-     * @throws CredentialsInvalidException
-     * @throws CredentialsMissingException
-     * @return array An array containing basic student info and link to profile pic
-     */
-    $api->login()
-    
+```php
+/**
+ * Start the login flow
+ * @throws AumsOfflineException
+ * @throws CredentialsInvalidException
+ * @throws CredentialsMissingException
+ * @return array An array containing basic student info and link to profile pic
+ */
+$api->login()
+```
     
 Do whatever you wanna do with the output ;-)
 
-    // Example output
-    Array
-    (
-        [roll_no] => CB.EN.U4AEE9999
-        [first_name] => NIRANJAN
-        [last_name] => R
-        [email] => niranjan94@yahoo.com
-        [phone] => 9622100100
-        [degree_program] => B.Tech2012
-        [branch] => AE
-        [semester] => 7
-        [image_filename] => U3TqEMc7FoJey8mlbQu8LLGFwY8owf-I67I2gR41uGU
-    )
+```php
+// Example output
+Array
+(
+    [roll_no] => CB.EN.U4AEE12029
+    [first_name] => NIRANJAN
+    [last_name] => R
+    [email] => niranjan94@yahoo.com
+    [phone] => 9600514966
+    [degree_program] => B.Tech2012
+    [branch] => AE
+    [semester] => 7
+    [image_filename] => U3TqEMc7FoJey8mlbQu8LLGFwY8owf-I67I2gR41uGU
+)
+```

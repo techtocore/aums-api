@@ -31,7 +31,7 @@ class API {
 
     /**
      * Set the storage directory to store cookies and image files
-     * @param $storageDir
+     * @param string $storageDir
      * @throws StorageIOException
      */
     public function setStorageDir($storageDir){

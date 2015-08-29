@@ -2,7 +2,6 @@
 
 namespace Aums;
 
-
 /**
  * A micro HTTP client for interacting with the AUMS
  * Class Client

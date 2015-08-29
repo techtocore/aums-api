@@ -1,0 +1,29 @@
+
+
+<html>
+
+<body alink="blue" bgcolor="white" leftmargin="12" link="blue" marginwidth="12" marginheight="12" rightmargin="0" text="black" topmargin="12" vlink="blue" onload="pageOnLoad()" onBeforeUnload ="pageOnUnLoad()">
+<FORM ACTION="/aums/Jsp/Student/ErrorMessage.jsp" METHOD="POST" NAME="pageForm" ONSUBMIT="htmlPageTopContainer_pageFormonSubmit();"><INPUT TYPE="HIDDEN" VALUE="-1" NAME="FORMSCROLLLEFThtmlPageTopContainer_pageForm">
+<INPUT TYPE="HIDDEN" VALUE="-1" NAME="FORMSCROLLTOPhtmlPageTopContainer_pageForm">
+<SCRIPT language="javascript">
+function htmlPageTopContainer_pageFormonSubmit() {
+document.forms['pageForm'].FORMSCROLLLEFThtmlPageTopContainer_pageForm.value=window.pageXOffset;
+document.forms['pageForm'].FORMSCROLLTOPhtmlPageTopContainer_pageForm.value=window.pageYOffset;
+}
+</SCRIPT>
+<INPUT TYPE="HIDDEN" VALUE="1" NAME="SALMONFORMhtmlPageTopContainer_pageForm"><INPUT TYPE="HIDDEN" NAME="Page_refIndex_hidden" VALUE="1">
+  <!--Page Content Begin-->
+  <h1 align="center"><font face="Georgia, Times New Roman, Times, serif" color="red"><strong>Invalid Url</strong> 
+    <!--Page Content End-->
+    </font> </h1>
+  <p>&nbsp;</p>
+  </FORM>
+<SCRIPT>
+function pageOnLoad(){
+}
+function pageOnUnLoad(){
+doCommonUnload();}
+</SCRIPT>
+</body>
+
+</html>

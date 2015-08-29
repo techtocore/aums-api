@@ -140,7 +140,7 @@ class API {
             $studentInfo = $this->cleanupInputs(array_merge($primaryInputs,$extraInputs));
 
             $encodedEnrollmentId = $studentInfo['enrollment_id'];
-            $firstName = $studentInfo['enrollment_id'];
+            $firstName = $studentInfo['first_name'];
             $lastName = $studentInfo['last_name'];
 
             $imageName = $this->storeStudentImage($firstName,$encodedEnrollmentId);
@@ -149,7 +149,12 @@ class API {
                 'roll_no'               => $this->rollNumber,
                 'first_name'            => $firstName,
                 'last_name'             => $lastName,
-                'image_url'             => "/image/".$imageName
+                'email'                 => $studentInfo['email'],
+                'phone'                 => $studentInfo['phone'],
+                'degree_program'        => $studentInfo['degree_program'],
+                'branch'                => $studentInfo['branch'],
+                'semester'              => $studentInfo['semester'],
+                'image_filename'        => $imageName
             );
 
         } else {

@@ -18,11 +18,12 @@ class Client {
     /**
      * Client constructor.
      * @param string $baseURI
+     * @param string $cookieDir
      */
-    public function __construct($baseURI = "") {
+    public function __construct($baseURI = "", $cookieDir = "../storage/cookies/") {
 
         $this->baseURI = $baseURI;
-        $this->cookieDir = __DIR__."/../storage/cookies/";
+        $this->cookieDir = $cookieDir;
 
         $this->cookieFilename = md5(time().mt_rand(10,99)).".cookies";
 
@@ -39,7 +40,6 @@ class Client {
         curl_setopt($this->curl, CURLOPT_VERBOSE, true);
         curl_setopt($this->curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3");
     }
-
 
     /**
      * Create a GET Request
@@ -92,6 +92,26 @@ class Client {
     {
         return $this->cookieFilename;
     }
+
+    /**
+     * Get the cookie filename
+     * @return string
+     */
+    public function getCookieFileLocation()
+    {
+        return $this->cookieDir.$this->cookieFilename;
+    }
+
+    /**
+     * @param string $cookieDir
+     */
+    public function setCookieDir($cookieDir)
+    {
+        $this->cookieDir = $cookieDir;
+        curl_setopt($this->curl, CURLOPT_COOKIEJAR,$this->cookieDir.$this->cookieFilename);
+        curl_setopt($this->curl, CURLOPT_COOKIEFILE,$this->cookieDir.$this->cookieFilename);
+    }
+
 
 
     /**

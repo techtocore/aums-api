@@ -10,18 +10,42 @@ class API {
     private $client;
     private $baseURI;
     private $loggedIn;
+    private $storageDir;
 
     /**
      * API constructor.
      * @param string $rollNumber
      * @param string $password
      * @param string $baseURI
+     * @param string $storageDir
+     * @throws StorageIOException
      */
-    public function __construct($rollNumber = null, $password = null, $baseURI = 'https://amritavidya.amrita.edu:8444') {
+    public function __construct($rollNumber = null, $password = null, $baseURI = 'https://amritavidya.amrita.edu:8444', $storageDir = '../storage/') {
         $this->rollNumber = strtoupper($rollNumber);
         $this->password = $password;
         $this->baseURI = $baseURI;
         $this->client = new Client($baseURI);
+        $this->setStorageDir($storageDir);
+    }
+
+
+    /**
+     * Set the storage directory to store cookies and image files
+     * @param $storageDir
+     * @throws StorageIOException
+     */
+    public function setStorageDir($storageDir){
+        $this->storageDir = $storageDir;
+        if(!is_writable($storageDir)){
+            throw new StorageIOException($storageDir." is not writable or does not exist");
+        }
+        if(!file_exists($this->storageDir."/cookies/")){
+            mkdir($this->storageDir."/cookies/");
+        }
+        if(!file_exists($this->storageDir."/images/")){
+            mkdir($this->storageDir."/images/");
+        }
+        $this->client->setCookieDir($this->storageDir."/cookies/");
     }
 
     /**
@@ -139,7 +163,7 @@ class API {
 
             $studentInfo = $this->cleanupInputs(array_merge($primaryInputs,$extraInputs));
 
-            $encodedEnrollmentId = $studentInfo['enrollment_id'];
+            $encodedEnrollmentId = $studentInfo['encoded_enrollment_id'];
             $firstName = $studentInfo['first_name'];
             $lastName = $studentInfo['last_name'];
 
@@ -162,47 +186,13 @@ class API {
         }
     }
 
-
-    /**
-     * Download and store the profile image locally
-     * @param string $name of the student
-     * @param string $encodedEnrollmentId of the student
-     * @return string The image's filename for later reference
-     * @throws AumsOfflineException
-     */
-    public function storeStudentImage($name, $encodedEnrollmentId) {
-
-        $params = [
-            'action' => 'SHOW_STUDENT_PHOTO',
-            'encodedenrollmentId' => $encodedEnrollmentId,
-            'flag' => 'photo'
-        ];
-
-        $response = $this->client->get('/aums/FileUploadServlet',$params);
-
-        $imageName = Encryption::encode($name . " " .time());
-
-        if($response->getCode() == 200){
-
-            $handle = fopen(__DIR__."/../storage/images/".$imageName, "w");
-            fwrite($handle, $response->getBody());
-            fclose($handle);
-            return $imageName;
-
-        } else {
-            throw new AumsOfflineException("Cannot connect to server: Error ".$response->getCode());
-        }
-
-    }
-
-
     /**
      * Make a new request and get additional info about the student
      * @param array $params all the input feilds and values from the previous request
      * @return array Extra information
      * @throws AumsOfflineException
      */
-    public function getExtraInfo($params){
+    private function getExtraInfo($params){
 
         $params['htmlPageTopContainer_ltabshistag_tabs_clicked_tabpane'] = 'personaldetails';
         $params['htmlPageTopContainer_action'] = 'HIS-TAB_CONTROL_CLICKED';
@@ -217,6 +207,41 @@ class API {
         }
     }
 
+    /**
+     * Download and store the profile image locally
+     * @param string $name of the student
+     * @param string $encodedEnrollmentId of the student
+     * @return string The image's filename for later reference
+     * @throws AumsOfflineException
+     */
+    private function storeStudentImage($name, $encodedEnrollmentId) {
+
+        $params = [
+            'action' => 'SHOW_STUDENT_PHOTO',
+            'encodedenrollmentId' => $encodedEnrollmentId,
+            'flag' => 'photo'
+        ];
+
+        $response = $this->client->get('/aums/FileUploadServlet',$params);
+
+        $imageName = Encryption::encode($name . " " .time());
+
+        if($response->getCode() == 200){
+            $handle = fopen($this->storageDir."/images/".$imageName, "w");
+            fwrite($handle, $response->getBody());
+            fclose($handle);
+            return $imageName;
+        } else {
+            throw new AumsOfflineException("Cannot connect to server: Error ".$response->getCode());
+        }
+    }
+
+    /**
+     * Delete the cookie file thereby 'logging out' the user
+     */
+    public function logout(){
+        unlink($this->client->getCookieFileLocation());
+    }
 
     /**
      * Traverses a DOM and gets all the form fields and their values

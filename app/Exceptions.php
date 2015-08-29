@@ -11,3 +11,4 @@ namespace Aums;
 class CredentialsMissingException extends \Exception { }
 class AumsOfflineException extends \Exception { }
 class CredentialsInvalidException extends \Exception { }
+class StorageIOException extends \Exception { }

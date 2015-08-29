@@ -1,6 +1,6 @@
 ### A PHP API for AUMS
 
-This is an on official api written in PHP to access the Amrita University Manangement System in a secure manner.
+This is an unofficial api written in PHP to access the Amrita University Manangement System in a secure manner.
 
 ##### Including the library
 

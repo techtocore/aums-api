@@ -30,6 +30,17 @@ Initialize the ```\Aums\API``` class.
 $api = new \Aums\API("full_roll_number", "password");
 ```
 
+Call the ```setStorageDir``` method and set the storage directory to a writable directory
+
+```php
+/**
+ * Set the storage directory to store cookies and image files
+ * @param string $storageDir
+ * @throws StorageIOException
+ */
+$api->setStorageDir($path_to_a_writable_dir)
+```
+
 Call the ```login``` method
 
 ```php

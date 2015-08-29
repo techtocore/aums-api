@@ -4,38 +4,34 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "42c97f914345b10502b4fd0037254fe7",
+    "hash": "2620d995f7dda08b4b23ce1ccdcab7f9",
     "packages": [
         {
-            "name": "league/event",
-            "version": "2.1.2",
+            "name": "bshaffer/oauth2-server-php",
+            "version": "v1.7.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thephpleague/event.git",
-                "reference": "e4bfc88dbcb60c8d8a2939a71f9813e141bbe4cd"
+                "url": "https://github.com/bshaffer/oauth2-server-php.git",
+                "reference": "7fde34c417e0f6542dfbe6aedf8132eb5575acfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/event/zipball/e4bfc88dbcb60c8d8a2939a71f9813e141bbe4cd",
-                "reference": "e4bfc88dbcb60c8d8a2939a71f9813e141bbe4cd",
+                "url": "https://api.github.com/repos/bshaffer/oauth2-server-php/zipball/7fde34c417e0f6542dfbe6aedf8132eb5575acfb",
+                "reference": "7fde34c417e0f6542dfbe6aedf8132eb5575acfb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": ">=5.3.9"
             },
-            "require-dev": {
-                "henrikbjorn/phpspec-code-coverage": "~1.0.1",
-                "phpspec/phpspec": "~2.0.0"
+            "suggest": {
+                "aws/aws-sdk-php": "Required to use the DynamoDB storage engine",
+                "predis/predis": "Required to use the Redis storage engine",
+                "thobbs/phpcassa": "Required to use the Cassandra storage engine"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev"
-                }
-            },
             "autoload": {
-                "psr-4": {
-                    "League\\Event\\": "src/"
+                "psr-0": {
+                    "OAuth2": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -44,81 +40,19 @@
             ],
             "authors": [
                 {
-                    "name": "Frank de Jonge",
-                    "email": "info@frenky.net"
+                    "name": "Brent Shaffer",
+                    "email": "bshafs@gmail.com",
+                    "homepage": "http://brentertainment.com"
                 }
             ],
-            "description": "Event package",
+            "description": "OAuth2 Server for PHP",
+            "homepage": "http://github.com/bshaffer/oauth2-server-php",
             "keywords": [
-                "emitter",
-                "event",
-                "listener"
-            ],
-            "time": "2015-05-21 12:24:47"
-        },
-        {
-            "name": "league/oauth2-server",
-            "version": "4.1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "34a6b66b8ca4255f8334c5aaf5cb34d7c57cdde8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/34a6b66b8ca4255f8334c5aaf5cb34d7c57cdde8",
-                "reference": "34a6b66b8ca4255f8334c5aaf5cb34d7c57cdde8",
-                "shasum": ""
-            },
-            "require": {
-                "league/event": "~2.1",
-                "php": ">=5.4.0",
-                "symfony/http-foundation": "~2.4"
-            },
-            "replace": {
-                "league/oauth2server": "*",
-                "lncd/oauth2": "*"
-            },
-            "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "4.3.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "League\\OAuth2\\Server\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Alex Bilbie",
-                    "email": "hello@alexbilbie.com",
-                    "homepage": "http://www.alexbilbie.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A lightweight and powerful OAuth 2.0 authorization and resource server library with support for all the core specification grants. This library will allow you to secure your API with OAuth and allow your applications users to approve apps that want to access their data from your API.",
-            "homepage": "http://oauth2.thephpleague.com/",
-            "keywords": [
-                "Authentication",
-                "api",
                 "auth",
-                "authorisation",
-                "authorization",
                 "oauth",
-                "oauth 2",
-                "oauth 2.0",
-                "oauth2",
-                "protect",
-                "resource",
-                "secure",
-                "server"
+                "oauth2"
             ],
-            "time": "2015-03-22 23:19:36"
+            "time": "2015-05-21 20:07:03"
         },
         {
             "name": "slim/slim",
@@ -208,59 +142,6 @@
                 "parser"
             ],
             "time": "2013-05-04 14:32:03"
-        },
-        {
-            "name": "symfony/http-foundation",
-            "version": "v2.7.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "863af6898081b34c65d42100c370b9f3c51b70ca"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/863af6898081b34c65d42100c370b9f3c51b70ca",
-                "reference": "863af6898081b34c65d42100c370b9f3c51b70ca",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/expression-language": "~2.4",
-                "symfony/phpunit-bridge": "~2.7"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\HttpFoundation\\": ""
-                },
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony HttpFoundation Component",
-            "homepage": "https://symfony.com",
-            "time": "2015-07-22 10:11:00"
         }
     ],
     "packages-dev": [],

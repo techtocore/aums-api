@@ -3,6 +3,8 @@ namespace Aums;
 
 use Sunra\PhpSimple\HtmlDomParser;
 
+error_reporting(E_ALL & ~E_NOTICE);
+
 class API {
 
     private $rollNumber;
@@ -67,12 +69,13 @@ class API {
 
     /**
      * Start the login flow
+     * @param bool $needInfo Tell whether you require the student info
+     * @return array
      * @throws AumsOfflineException
      * @throws CredentialsInvalidException
      * @throws CredentialsMissingException
-     * @return array An array containing basic student info and link to profile pic
      */
-    public function login(){
+    public function login($needInfo = true){
 
         if($this->rollNumber == null && $this->password == null) {
             throw new CredentialsMissingException("Roll number and password required");
@@ -97,9 +100,15 @@ class API {
         if($response->getCode() == 200){
 
             if (strpos($response->getBody(),'Log Out') !== false) {
-                $studentInfo = $this->getStudentInfo();
+
                 $this->loggedIn = true;
-                return $studentInfo;
+                if($needInfo){
+                    $studentInfo = $this->getStudentInfo();
+                    return $studentInfo;
+                } else {
+                    return array("roll_no" => $this->rollNumber);
+                }
+
             } else {
                 throw new CredentialsInvalidException("Username or password is incorrect");
             }

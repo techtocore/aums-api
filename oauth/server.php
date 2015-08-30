@@ -1,7 +1,14 @@
 <?php
-$dsn      = 'mysql:dbname=aums_api;host=localhost';
+
+$database = 'aums_api';
+
+$dsn      = 'mysql:dbname='.$database.';host=localhost';
 $username = 'root';
 $password = '';
+
+DB::$user = $username;
+DB::$password = $password;
+DB::$dbName = $database;
 
 // error reporting (this is a demo, after all!)
 ini_set('display_errors',1);error_reporting(E_ALL);
@@ -14,3 +21,24 @@ $server = new OAuth2\Server($storage);
 
 // Add the "Authorization Code" grant type (this is where the oauth magic happens)
 $server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage));
+
+$grantType = new OAuth2\GrantType\RefreshToken($storage);
+
+$server->addGrantType($grantType);
+
+// configure available scopes
+$defaultScope = 'basic';
+$supportedScopes = array(
+    'basic',
+    'extras',
+    'profile_pic'
+);
+
+$memory = new OAuth2\Storage\Memory(array(
+    'default_scope' => $defaultScope,
+    'supported_scopes' => $supportedScopes
+));
+
+$scopeUtil = new OAuth2\Scope($memory);
+
+$server->setScopeUtil($scopeUtil);

@@ -6,6 +6,7 @@ require '../app/Response.php';
 require '../app/Client.php';
 require '../app/API.php';
 
+require '../oauth/db.class.php';
 require '../oauth/server.php';
 
 use Aums\CredentialsInvalidException;
@@ -17,22 +18,28 @@ $app->get('/', function () {
     print_r($api->login());
 });
 
-$app->get('/image/{filename}', function ($filename) use ($app) {
+$app->get('/image/:filename', function ($filename) use ($app) {
     $app->response->headers->set('Content-Type', 'image/jpg');
     echo file_get_contents(__DIR__."/../storage/images/".$filename);
 });
 
-$app->post('/oauth/token', function() use ($app, $server) {
-    $app->response->headers->set('Content-Type', 'application/json');
-    $server->handleTokenRequest(OAuth2\Request::createFromGlobals())->send();
-});
+$app->post('/oauth/token', function() use ($server) {
+    $response = $server->handleTokenRequest(OAuth2\Request::createFromGlobals());
+    if($response->getStatusCode() == 200) {
+        $code = $_POST['code'];
 
-$app->post('/oauth/resource', function() use ($app, $server) {
-    if (!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())) {
-        $server->getResponse()->send();
-        die;
+        $responseJson = json_decode($response->getResponseBody());
+
+        $hash = DB::queryFirstField("SELECT hash FROM authorization_codes_map WHERE authorization_code = '$code'");
+        $hash = \Aums\Encryption::encode(\Aums\Encryption::decode($hash,$code),$responseJson->access_token);
+
+        DB::insert('access_tokens_map', array(
+            'access_token' => $responseJson->access_token,
+            'hash' => $hash
+        ));
+
+        $response->send();
     }
-    echo json_encode(array('success' => true, 'message' => 'You accessed my APIs!'));
 });
 
 $app->get('/oauth/authorize', function() use ($app, $server) {
@@ -57,17 +64,80 @@ $app->post('/oauth/authorize', function() use ($app, $server) {
         $api = new \Aums\API(trim($_POST['username']), trim($_POST['password']));
 
         try {
-            $api->login(false);
+            $rollNo = $api->login(false)['roll_no'];
+            $server->handleAuthorizeRequest($request, $response, true, $rollNo);
+            $code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=')+5, 40);
 
-            $server->handleAuthorizeRequest($request, $response, true);
-            if (true) {
-                //$code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=')+5, 40);
-                $app->response->redirect($response->getHttpHeader('Location'));
-            }
+            DB::insert('authorization_codes_map',array(
+                'authorization_code' => $code,
+                'hash' => \Aums\Encryption::encode($_POST['password'],$code)
+            ));
+
+            $app->response->redirect($response->getHttpHeader('Location'));
         } catch (CredentialsInvalidException $e) {
             $app->response->redirect($_SERVER['REQUEST_URI']."&auth_error=incorrect");
         }
     }
+});
+
+
+$app->post('/oauth/resource/basic', function() use ($server) {
+    $request = OAuth2\Request::createFromGlobals();
+    $response = new OAuth2\Response();
+    $scopeRequired = 'basic';
+    if (!$server->verifyResourceRequest($request, $response, $scopeRequired)) {
+        $server->getResponse()->send();
+        die;
+    }
+
+    $api = new \Aums\API("username", "password");
+    $info = $api->login();
+
+    echo json_encode(array('success' => true, 'data' => array(
+        'roll_no'       => $info['roll_no'],
+        'first_name'    => $info['first_name'],
+        'last_name'     => $info['last_name'],
+        'email'         => $info['email'],
+        'image_filename'=> $info['image_filename']
+    )));
+
+});
+
+$app->post('/oauth/resource/extra', function() use ($server) {
+    $request = OAuth2\Request::createFromGlobals();
+    $response = new OAuth2\Response();
+    $scopeRequired = 'extras';
+    if (!$server->verifyResourceRequest($request, $response, $scopeRequired)) {
+        $server->getResponse()->send();
+        die;
+    }
+
+    $api = new \Aums\API("username", "password");
+    $info = $api->login();
+
+    echo json_encode(array('success' => true, 'data' => array(
+        'roll_no'       => $info['roll_no'],
+        'first_name'    => $info['first_name'],
+        'last_name'     => $info['last_name'],
+        'email'         => $info['email'],
+        'degree_program'=> $info['degree_program'],
+        'branch'        => $info['branch'],
+        'semester'      => $info['semester'],
+        'image_filename'=> $info['image_filename']
+    )));
+});
+
+$app->post('/oauth/resource/picture/:filename', function($filename) use ($app, $server) {
+    $request = OAuth2\Request::createFromGlobals();
+    $response = new OAuth2\Response();
+    $scopeRequired = 'profile_pic';
+    if (!$server->verifyResourceRequest($request, $response, $scopeRequired)) {
+        $server->getResponse()->send();
+        die;
+    }
+    $app->response->headers->set('Content-Type', 'image/jpg');
+    echo file_get_contents(__DIR__."/../storage/images/".$filename);
+
 });
 
 

@@ -22,22 +22,31 @@ class Encryption {
         return base64_decode($data);
     }
 
-    public static function encode($value){
-
+    public static function encode($value , $key = null){
+        if($key == null) {
+            $key = Encryption::$skey;
+        } else {
+            $key = pack('H*', $key);
+        }
         if(!$value){return false;}
         $text = $value;
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $crypttext = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, Encryption::$skey, $text, MCRYPT_MODE_ECB, $iv);
+        $crypttext = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $text, MCRYPT_MODE_ECB, $iv);
         return trim(Encryption::safe_b64encode($crypttext));
     }
 
-    public static function decode($value){
+    public static function decode($value, $key = null){
+        if($key == null) {
+            $key = Encryption::$skey;
+        } else {
+            $key = pack('H*', $key);
+        }
         if(!$value){return false;}
         $crypttext = Encryption::safe_b64decode($value);
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $decrypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Encryption::$skey, $crypttext, MCRYPT_MODE_ECB, $iv);
+        $decrypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $crypttext, MCRYPT_MODE_ECB, $iv);
         return trim($decrypttext);
     }
 }

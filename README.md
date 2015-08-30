@@ -2,6 +2,8 @@
 
 This is an unofficial api written in PHP to access the Amrita University Manangement System in a secure manner.
 
+> This API is as secure as logging in from the AUMS website
+
 ##### Including the library
 
 This library uses [Composer](https://getcomposer.org/) for dependency management and autoloading.

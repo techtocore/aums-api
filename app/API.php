@@ -13,6 +13,7 @@ class API {
     private $baseURI;
     private $loggedIn;
     private $storageDir;
+    private $serverID = 0;
 
     /**
      * API constructor.
@@ -30,6 +31,30 @@ class API {
         $this->setStorageDir($storageDir);
     }
 
+    /**
+     * @param string $baseURI
+     */
+    public function setBaseURI($baseURI) {
+        $this->baseURI = $baseURI;
+        $this->client = new Client($baseURI);
+    }
+
+
+    public function changeServer($id){
+        switch($id) {
+            case 0:
+                $this->setBaseURI('https://amritavidya.amrita.edu:8444');
+                return true;
+            case 1:
+                $this->setBaseURI('https://amritavidya1.amrita.edu:8444');
+                return true;
+            case 2:
+                $this->setBaseURI('https://amritavidya2.amrita.edu:8444');
+                return true;
+            default:
+                return false;
+        }
+    }
 
     /**
      * Set the storage directory to store cookies and image files
@@ -66,6 +91,17 @@ class API {
         $this->password = $password;
     }
 
+    public function autoSwitchServer(Response $response) {
+        $effectiveHost = parse_url($response->getEffectiveUrl(), PHP_URL_HOST);
+        $currentHost = parse_url($this->baseURI, PHP_URL_HOST);
+
+        if($effectiveHost != $currentHost) {
+            $this->setBaseURI("https://".$effectiveHost.":8444");
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Start the login flow
@@ -110,10 +146,19 @@ class API {
                 }
 
             } else {
-                throw new CredentialsInvalidException("Username or password is incorrect");
+                if($this->autoSwitchServer($response)) {
+                    return $this->login($needInfo);
+                } else {
+                    throw new CredentialsInvalidException("Username or password is incorrect");
+                }
             }
         } else {
-            throw new AumsOfflineException("Cannot connect to server: Error ".$response->getCode());
+
+            if($this->changeServer(++$this->serverID)){
+                return $this->login($needInfo);
+            } else {
+                throw new AumsOfflineException("Cannot connect to server: Error ".$response->getCode());
+            }
         }
     }
 
@@ -132,6 +177,7 @@ class API {
         $response = $this->client->get('/cas/login',$params);
 
         if($response->getCode() == 200){
+
             $dom = HtmlDomParser::str_get_html($response->getBody());
 
             $form = $dom->find('#fm1')[0];

@@ -4,7 +4,7 @@ $database = 'aums_api';
 
 $dsn      = 'mysql:dbname='.$database.';host=localhost';
 $username = 'root';
-$password = '';
+$password = 'root';
 
 DB::$user = $username;
 DB::$password = $password;

@@ -49,7 +49,8 @@ $app->get('/oauth/authorize', function() use ($app, $server) {
         $app->view()->setData(array('response' => json_decode($response->getResponseBody())));
         $app->render('error.php');
     } else {
-        $app->view()->setData(array('app_name' => 'Amrita Facemash', "error" => (isset($_GET['auth_error'])&&$_GET['auth_error']=="incorrect")?true:false));
+        $appName = DB::queryFirstField("SELECT client_app_name FROM oauth_clients WHERE client_id = %s",$_GET['client_id']);
+        $app->view()->setData(array('app_name' => $appName, "error" => (isset($_GET['auth_error'])&&$_GET['auth_error']=="incorrect")?true:false));
         $app->render('authorization_page.php');
     }
 });

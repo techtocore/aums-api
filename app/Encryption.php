@@ -4,7 +4,7 @@ namespace Aums;
 
 class Encryption {
 
-    private static $skey 	= "C6lAiQLqgiJTZpi0"; // you can change it
+    private static $skey = "kqrktDyzrL1TZPv22WMpbaNM5ONFveGZ"; // you can change it
 
     public static function safe_b64encode($string) {
 

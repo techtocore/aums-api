@@ -1,3 +1,5 @@
+[![StyleCI](https://styleci.io/repos/41588959/shield)](https://styleci.io/repos/41588959)
+
 ### A PHP API for AUMS
 
 This is an unofficial api written in PHP to access the Amrita University Manangement System in a secure manner.

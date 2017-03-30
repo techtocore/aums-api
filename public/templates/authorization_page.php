@@ -59,12 +59,12 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <form id="loginForm" method="POST" action="">
-                        <div class="form-group <?=(($this->data['error']) ? 'has-error' : '')?>">
+                        <div class="form-group <?=(($this->data['error'])?'has-error':'')?>">
                             <label for="username" class="control-label">Roll No</label>
                             <input type="text" class="form-control" id="username" name="username" value="" required title="Please enter you username" placeholder="CB.EN.U4XYZ12029">
                             <span class="help-block"></span>
                         </div>
-                        <div class="form-group <?=(($this->data['error']) ? 'has-error' : '')?>">
+                        <div class="form-group <?=(($this->data['error'])?'has-error':'')?>">
                             <label for="password" class="control-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" value="" required placeholder="AUMS login password" title="Please enter your password">
                             <span class="help-block"></span>
